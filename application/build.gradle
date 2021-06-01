@@ -1,0 +1,29 @@
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+}
+
+group 'gems.calbania'
+version '1.0-SNAPSHOT'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'CalincaApplicationKt'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    compile "org.slf4j:slf4j-simple:1.7.30"
+    compile "io.javalin:javalin:3.13.7"
+    compile "org.json:json:20160810"
+    compile 'redis.clients:jedis:3.6.0'
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile project(':core')
+}
