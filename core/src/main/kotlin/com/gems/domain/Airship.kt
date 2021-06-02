@@ -1,7 +1,7 @@
 package com.gems.domain
 
 data class Airship(
-    var macAddress : String,
+    var id : String,
     var command : Long,
-    var status : String
+    var status : Long
 )

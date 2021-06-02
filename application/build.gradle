@@ -23,7 +23,7 @@ dependencies {
     compile "org.slf4j:slf4j-simple:1.7.30"
     compile "io.javalin:javalin:3.13.7"
     compile "org.json:json:20160810"
-    compile 'redis.clients:jedis:3.6.0'
     compile 'com.google.code.gson:gson:2.8.5'
+    compile "com.fasterxml.jackson.core:jackson-databind:2.10.3"
     compile project(':core')
 }
