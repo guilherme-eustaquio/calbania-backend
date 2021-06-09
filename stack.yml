@@ -1,9 +1,26 @@
-version: '3.7'
+version: '2.1'
 
 services:
+  calbania-server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+      - "7070:7070"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    network_mode: "host"
+
   mongodb:
     image: mongo:latest
     container_name: calbaniadb
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "'db.runCommand(\"ping\").ok'", "localhost:27017/test", "--quiet"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ports:
       - "27017:27017"
     restart: always
@@ -13,3 +30,4 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: BAYDAaXPGeeCRnw
     volumes:
       - ./database/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+

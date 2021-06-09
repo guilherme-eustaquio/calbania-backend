@@ -6,18 +6,19 @@ import com.gems.application.util.DatabaseCredentials.uri
 import com.github.cloudyrock.mongock.driver.mongodb.sync.v4.driver.MongoSync4Driver
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
-
+import io.javalin.Javalin.log
 
 object MigrationsConfig {
 
     private val connection : MongoClient = MongoClients.create(uri)
 
     fun initMigrations() {
-
+        log.info("Inicializando migrations....")
         MongockStandalone.builder()
             .setDriver(
                 MongoSync4Driver.withDefaultLock(connection, databaseName))
                 .addChangeLogsScanPackage("com.gems.application.changelog")
                 .buildRunner()
+                .execute()
     }
 }
