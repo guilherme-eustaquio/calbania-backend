@@ -1,8 +1,8 @@
-package com.gems.routes.websocket
+package com.gems.application.routes.websocket
 
-import com.gems.context.WebSocketContext
-import com.gems.domain.Airship
-import com.gems.service.AirshipService
+import com.gems.application.context.WebSocketContext
+import com.gems.core.domain.Airship
+import com.gems.application.service.AirshipService
 import com.google.gson.Gson
 import io.javalin.Javalin
 import io.javalin.Javalin.log

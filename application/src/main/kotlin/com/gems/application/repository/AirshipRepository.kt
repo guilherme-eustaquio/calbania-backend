@@ -1,6 +1,6 @@
-package com.gems.repository
+package com.gems.application.repository
 
-import com.gems.domain.Airship
+import com.gems.core.domain.Airship
 import java.util.concurrent.ConcurrentHashMap
 
 class AirshipRepository {
@@ -8,11 +8,12 @@ class AirshipRepository {
     private val airshipStorage = ConcurrentHashMap<String, Airship>()
 
     fun save(airship: Airship): Airship? {
+        LogRepository.save(airship)
         airshipStorage[airship.id] = airship
         return airshipStorage[airship.id]
     }
 
-    fun findAll() : ConcurrentHashMap<String, Airship>? {
+    fun findAll() : ConcurrentHashMap<String, Airship> {
         return airshipStorage
     }
 

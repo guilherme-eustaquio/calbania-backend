@@ -1,8 +1,8 @@
-package com.gems.service
+package com.gems.application.service
 
-import com.gems.context.WebSocketContext
-import com.gems.domain.Airship
-import com.gems.repository.AirshipRepository
+import com.gems.application.context.WebSocketContext
+import com.gems.core.domain.Airship
+import com.gems.application.repository.AirshipRepository
 import java.util.concurrent.ConcurrentHashMap
 
 object AirshipService {
@@ -21,12 +21,12 @@ object AirshipService {
         return airshipRepository.findById(id)
     }
 
-    fun send(id : String) {
+    fun send(airship: Airship) {
 
-        val airshipContext = WebSocketContext.findById(id)
+        val airshipContext = WebSocketContext.findById(airship.id)
 
         if(airshipContext != null && airshipContext.session.isOpen) {
-            airshipContext.send("Hello world");
+            airshipContext.send(airship)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.gems.context
+package com.gems.application.context
 
 import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap

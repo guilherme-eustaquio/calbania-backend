@@ -1,7 +1,7 @@
-package com.gems.domain
+package com.gems.core.domain
 
 data class Airship(
     var id : String,
-    var command : Long,
+    var command : Command,
     var status : Long
 )

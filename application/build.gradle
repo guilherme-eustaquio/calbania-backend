@@ -1,29 +1,41 @@
-
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+}
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 group 'gems.calbania'
 version '1.0-SNAPSHOT'
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'CalincaApplicationKt'
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
-    compile "org.slf4j:slf4j-simple:1.7.30"
-    compile "io.javalin:javalin:3.13.7"
-    compile "org.json:json:20160810"
+    compile 'org.jetbrains.kotlin:kotlin-stdlib'
+    compile 'org.slf4j:slf4j-simple:1.7.30'
+    compile 'io.javalin:javalin:3.13.7'
+    compile 'org.json:json:20160810'
     compile 'com.google.code.gson:gson:2.8.5'
-    compile "com.fasterxml.jackson.core:jackson-databind:2.10.3"
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
+    compile 'org.litote.kmongo:kmongo-coroutine:4.2.7'
+    compile 'org.litote.kmongo:kmongo-async:4.2.7'
+    compile 'org.litote.kmongo:kmongo:4.2.7'
+    //compile 'org.mongodb:mongo-java-driver:3.12.8'
+    compile 'com.github.cloudyrock.mongock:mongock-standalone:4.3.8'
+    compile 'com.github.cloudyrock.mongock:mongodb-sync-v4-driver:4.3.8'
+    //compile 'com.github.mongobee:mongobee:0.13'
+    //compile 'com.github.dalet-oss:mongobee:1.0.4'
     compile project(':core')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.gems.application.CalbaniaApplicationKt'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
