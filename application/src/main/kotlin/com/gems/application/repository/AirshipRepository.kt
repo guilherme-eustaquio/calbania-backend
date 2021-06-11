@@ -8,7 +8,7 @@ class AirshipRepository {
     private val airshipStorage = ConcurrentHashMap<String, Airship>()
 
     fun save(airship: Airship): Airship? {
-        LogRepository.save(airship)
+        LogRepository.save(airship.id, airship)
         airshipStorage[airship.id] = airship
         return airshipStorage[airship.id]
     }

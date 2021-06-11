@@ -1,15 +1,15 @@
 package com.gems.application.routes.http
 
+import com.gems.application.config.DatabaseManager
 import com.gems.application.service.AirshipService
 import com.gems.core.domain.Airship
-import com.google.gson.Gson
 import io.javalin.Javalin
 
 fun beginAirshipHttpRoutes(app : Javalin) {
 
     val contextPath = "/airships"
 
-    app.get("$contextPath") { ctx ->
+    app.get(contextPath) { ctx ->
         AirshipService.findAll()?.let { ctx.json(it) }
     }
 
@@ -18,9 +18,14 @@ fun beginAirshipHttpRoutes(app : Javalin) {
         AirshipService.findById(id)?.let { ctx.json(it) }
     }
 
-    app.post("$contextPath") { ctx ->
-        val airship = Gson().fromJson(ctx.body(), Airship::class.java)
+    app.post(contextPath) { ctx ->
+        val airship = ctx.body<Airship>()
         AirshipService.send(airship)
         ctx.json(airship)
     }
+
+    app.get("$contextPath/logs/:id") { ctx ->
+        DatabaseManager.findByKeyName(ctx.pathParam("id")).let { ctx.json(it) }
+    }
+
 }

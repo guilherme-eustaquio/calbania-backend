@@ -1,11 +1,9 @@
 package com.gems.application
 
-import com.gems.application.config.HttpConfig.startHttpServer
-import com.gems.application.config.HttpConfig.startWebSocketServer
-import com.gems.application.config.MigrationsConfig.initMigrations
+import com.gems.application.config.NetworkConfig.startHttpServer
+import com.gems.application.config.NetworkConfig.startWebSocketServer
 
 fun main() {
-    initMigrations()
     startWebSocketServer()
     startHttpServer()
 }

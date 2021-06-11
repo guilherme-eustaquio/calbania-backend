@@ -4,11 +4,11 @@ import com.gems.application.routes.mountHttpRoutes
 import com.gems.application.routes.mountWebSocketRoutes
 import io.javalin.Javalin
 
-object HttpConfig {
+object NetworkConfig {
 
     private const val defaultContentType : String = "application/json"
     private const val webSocketPort : Int = 7070
-    private const val httpServerPort : Int = 8080
+    private const val httpServerPort : Int = 7071
 
     fun startWebSocketServer() {
         Javalin.create { config ->

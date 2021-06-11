@@ -8,6 +8,15 @@ object WebSocketContext {
     private val webSocketContext = ConcurrentHashMap<WsContext, String?>()
 
     fun save(context : WsContext, id : String = "") {
+
+        val lastContext = findById(id)
+
+        if(lastContext != null && !lastContext.session.isOpen) {
+            lastContext.session.disconnect()
+            webSocketContext.remove(lastContext)
+            return
+        }
+
         webSocketContext[context] = id
     }
 
