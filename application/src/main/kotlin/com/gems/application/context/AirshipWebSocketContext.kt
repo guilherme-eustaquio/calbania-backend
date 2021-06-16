@@ -3,30 +3,29 @@ package com.gems.application.context
 import io.javalin.websocket.WsContext
 import java.util.concurrent.ConcurrentHashMap
 
-object WebSocketContext {
+object AirshipWebSocketContext {
 
-    private val webSocketContext = ConcurrentHashMap<WsContext, String?>()
+    private val airshipWebSocketContext = ConcurrentHashMap<WsContext, String?>()
 
     fun save(context : WsContext, id : String = "") {
 
         val lastContext = findById(id)
 
         if(lastContext != null && !lastContext.session.isOpen) {
-            lastContext.session.disconnect()
-            webSocketContext.remove(lastContext)
+            airshipWebSocketContext.remove(lastContext)
             return
         }
 
-        webSocketContext[context] = id
+        airshipWebSocketContext[context] = id
     }
 
     fun findByContext(context : WsContext): String? {
-        return webSocketContext[context]
+        return airshipWebSocketContext[context]
     }
 
     fun findById(id : String): WsContext ? {
 
-        for ((key, value) in webSocketContext) {
+        for ((key, value) in airshipWebSocketContext) {
             if(value == id) {
                 return key
             }
@@ -36,10 +35,10 @@ object WebSocketContext {
     }
 
     fun findAll(): ConcurrentHashMap<WsContext, String?> {
-        return webSocketContext
+        return airshipWebSocketContext
     }
 
     fun delete(context : WsContext) {
-        webSocketContext.remove(context)
+        airshipWebSocketContext.remove(context)
     }
 }

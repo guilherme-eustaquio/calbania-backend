@@ -1,3 +1,5 @@
 rootProject.name = 'calbania'
 include 'core'
 include 'application'
+include 'security'
+

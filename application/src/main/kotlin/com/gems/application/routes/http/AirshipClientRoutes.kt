@@ -10,7 +10,7 @@ fun beginAirshipHttpRoutes(app : Javalin) {
     val contextPath = "/airships"
 
     app.get(contextPath) { ctx ->
-        AirshipService.findAll()?.let { ctx.json(it) }
+        AirshipService.findAll().let { ctx.json(it) }
     }
 
     app.get("$contextPath/:id") { ctx ->
@@ -20,7 +20,7 @@ fun beginAirshipHttpRoutes(app : Javalin) {
 
     app.post(contextPath) { ctx ->
         val airship = ctx.body<Airship>()
-        AirshipService.send(airship)
+//        AirshipService.send(airship)
         ctx.json(airship)
     }
 

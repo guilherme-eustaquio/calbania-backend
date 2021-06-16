@@ -1,7 +1,8 @@
 package com.gems.core.domain
 
-class Command(
-    var id : String,
+data class Command(
+    var id : String?,
     var timestamp : String?,
+    var type : Long?,
     var action : Long
 )
