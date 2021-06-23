@@ -8,6 +8,7 @@ services:
     network_mode: "host"
     depends_on:
       - redis
+    restart: always
   redis:
     image: redis
     command: redis-server
@@ -15,3 +16,4 @@ services:
       - /database:/database
     ports:
       - "6379:6379"
+    restart: always
