@@ -1,9 +1,7 @@
 package com.gems.application
 
-import com.gems.application.config.NetworkConfig.startHttpServer
-import com.gems.application.config.NetworkConfig.startWebSocketServer
+import com.gems.application.config.NetworkConfig.startServer
 
 fun main() {
-    startWebSocketServer()
-    startHttpServer()
+    startServer()
 }

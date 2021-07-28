@@ -1,15 +1,17 @@
 package com.gems.application.routes.websocket
 
 import com.gems.application.context.CalbaniaWebSocketContext
+import com.gems.application.enum.Roles
 import com.gems.application.service.AirshipService
 import com.gems.core.domain.Airship
 import com.gems.core.enum.MessageType
 import io.javalin.Javalin
 import io.javalin.Javalin.log
+import io.javalin.core.security.SecurityUtil.roles
 
 fun beginCalbaniaWebSocketRoutes(app : Javalin) {
     
-    app.ws("/calbania") { ws ->
+    app.ws("/calbania", { ws ->
         ws.onConnect { ctx ->
 
             log.info("${ctx.sessionId} joined the Calbania")
@@ -40,5 +42,5 @@ fun beginCalbaniaWebSocketRoutes(app : Javalin) {
             log.info("${ctx.sessionId} left the Calbania")
             CalbaniaWebSocketContext.remove(ctx)
         }
-    }
+    }, roles(Roles.USER, Roles.ADMIN))
 }

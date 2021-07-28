@@ -2,15 +2,17 @@ package com.gems.application.routes.websocket
 
 import com.gems.application.context.AirshipWebSocketContext
 import com.gems.application.context.CalbaniaWebSocketContext
+import com.gems.application.enum.Roles
 import com.gems.core.domain.Airship
 import com.gems.application.service.AirshipService
 import com.gems.core.enum.MessageType
 import io.javalin.Javalin
 import io.javalin.Javalin.log
+import io.javalin.core.security.SecurityUtil.roles
 
 fun beginAirshipWebSocketRoutes(app : Javalin) {
 
-    app.ws("/airships") { ws ->
+    app.ws("/airships", { ws ->
         ws.onConnect { ctx ->
             log.info("${ctx.sessionId} joined the Airship")
         }
@@ -34,5 +36,5 @@ fun beginAirshipWebSocketRoutes(app : Javalin) {
                 CalbaniaWebSocketContext.broadcast(airship)
             }
         }
-    }
+    }, roles(Roles.ANYONE))
 }

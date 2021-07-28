@@ -9,6 +9,5 @@ object LogRepository {
         log.info("Inserting $document on log database...")
         DatabaseManager.save(keyName, document)
         log.info("Inserted $document successfully.")
-
     }
 }

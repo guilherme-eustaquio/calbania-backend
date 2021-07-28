@@ -16,12 +16,12 @@ object DatabaseManager {
         connection.lrem(keyName, occurrence, toJsonString(document))
     }
 
-    fun findByKeyName(keyName: String, current : Long = 0, limit : Long = 10): ArrayList<Any> {
+    fun <T> findByKeyName(keyName: String, valueType : Class<T>, current : Long = 0, limit : Long = -1): ArrayList<T> {
 
-        var result = ArrayList<Any>()
+        var result = ArrayList<T>()
 
         connection.lrange(keyName, current, limit).forEach {
-            result.add(toJsonObject(it, Any::class.java))
+            result.add(toJsonObject(it, valueType))
         }
 
         return result
