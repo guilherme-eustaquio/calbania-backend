@@ -8,4 +8,6 @@ fun mountHandlerExceptions(app : Javalin) {
     globalExceptionHandlers(app)
     notFoundExceptionHandlers(app)
     unauthorizedExceptionHandlers(app)
+    conflictExceptionHandlers(app)
+    badRequestExceptionHandlers(app)
 }

@@ -4,6 +4,7 @@ import com.gems.application.enum.Roles
 import com.gems.application.exception.RevokedTokenException
 import com.gems.application.repository.TokenRepository
 import com.gems.application.security.JwtProvider.validateToken
+import com.gems.application.utils.HeaderUtils.getTokenByHeader
 import io.javalin.Javalin
 import io.javalin.core.security.Role
 import io.javalin.http.Context
@@ -26,6 +27,10 @@ object AccessManagerConfig {
 
     private fun checkIfUserIsAuthorized(permittedRoles: Set<Role>, level : String) : Boolean {
 
+        if(permittedRoles.isEmpty()) {
+            return true
+        }
+
         val role = Roles.values().find { value ->
             level == value.name
         }
@@ -35,21 +40,16 @@ object AccessManagerConfig {
 
     private fun checkToken(ctx: Context, permittedRoles: Set<Role>): Boolean {
 
-        val auth = ctx.header("Authorization")
+        val token = getTokenByHeader(ctx)
 
-        if (auth != null && auth.contains("Bearer ")) {
+        TokenRepository.findByToken(token)?.let {
+            throw RevokedTokenException()
+        }
 
-            val token = auth.removePrefix("Bearer ")
+        val decoded = validateToken(token)
 
-            TokenRepository.findByToken(token)?.let {
-                throw RevokedTokenException()
-            }
-
-            val decoded = validateToken(token)
-
-            if(decoded != null && checkIfUserIsAuthorized(permittedRoles, decoded.getClaim("level").asString())) {
-                return true
-            }
+        if(decoded != null && checkIfUserIsAuthorized(permittedRoles, decoded.getClaim("level").asString())) {
+            return true
         }
 
         return false

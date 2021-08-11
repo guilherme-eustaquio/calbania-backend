@@ -1,7 +1,6 @@
 package com.gems.application.security
 
 import at.favre.lib.crypto.bcrypt.BCrypt
-import com.gems.application.exception.UserNotFoundException
 import com.gems.application.exception.UsernameOrPasswordIncorrectException
 import com.gems.application.service.UserService
 import com.gems.core.domain.User
@@ -10,7 +9,7 @@ object AuthProvider {
 
     fun checkPassword(user : User): User {
 
-        val userToCompare = UserService.findByUsername(user.username!!) ?: throw UserNotFoundException()
+        val userToCompare = UserService.findByUsername(user.username!!) ?: throw UsernameOrPasswordIncorrectException()
 
         if(!checkPasswordHash(user.password, userToCompare.password)) {
             throw UsernameOrPasswordIncorrectException()

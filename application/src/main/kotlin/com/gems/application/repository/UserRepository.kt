@@ -7,33 +7,34 @@ object UserRepository {
 
     private const val keyName = "users"
 
-    fun save(user : User) {
+    fun save(user: User, extraModifications: (() -> Unit)? = null): User {
 
-        val userFound = user.id?.let { findById(it) }
-
-        if(userFound != null) {
-            setAttributesNotNull(user, userFound)
+        DatabaseManager.transaction {
+            DatabaseManager.delete(keyName, user, 1, it)
+            if (extraModifications != null) {
+                extraModifications()
+            }
+            DatabaseManager.save(keyName, user, it)
         }
 
-        DatabaseManager.save(keyName, user)
+        return user
     }
 
     fun findByUserName(name: String): User? {
-        val users : ArrayList<User> = DatabaseManager.findByKeyName(keyName, User::class.java)
+        val users : ArrayList<User> = DatabaseManager.findByKeyName(keyName, User::class.java, 0, -1)
         return users.find { user ->
             user.username == name
         }
     }
 
     fun findById(id : String) : User? {
-        val users : ArrayList<User> = DatabaseManager.findByKeyName(keyName, User::class.java)
+        val users : ArrayList<User> = DatabaseManager.findByKeyName(keyName, User::class.java, 0, -1)
         return users.find { user ->
             user.id == id
         }
     }
 
-    private fun setAttributesNotNull(userToUpdate : User, user : User) {
-        userToUpdate.username = user.username
-        userToUpdate.password = user.password
+    fun findAll(current : Long = 0, limit : Long = -1) : List<User> {
+        return DatabaseManager.findByKeyName(keyName, User::class.java, current, limit)
     }
 }

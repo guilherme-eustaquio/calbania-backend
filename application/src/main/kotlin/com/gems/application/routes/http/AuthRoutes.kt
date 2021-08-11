@@ -1,11 +1,11 @@
 package com.gems.application.routes.http
 
 import com.gems.application.enum.Roles
-import com.gems.application.repository.UserRepository
 import com.gems.application.request.UserLoginRequest
 import com.gems.application.response.JwtResponse
 import com.gems.application.security.AuthProvider
 import com.gems.application.security.JwtProvider
+import com.gems.application.service.UserService
 import com.gems.application.utils.JsonUtils.toJsonObject
 import com.gems.application.utils.JsonUtils.toJsonString
 import com.gems.core.domain.User
@@ -26,10 +26,21 @@ fun beginAuthHttpRoutes(app : Javalin) {
             JwtProvider.storeOnBlackListToken(it)
         }
 
-        userToCompare.lastToken = token
+        user.lastToken = token
 
-        UserRepository.save(userToCompare)
+        UserService.update(user)
 
         ctx.json(JwtResponse(token))
     }, roles(Roles.ANYONE))
+
+    app.post("${contextPath}/logout", { ctx ->
+
+        val header = ctx.header("Authorization")
+        val token = header?.removePrefix("Bearer ")
+
+        if (token != null) {
+            JwtProvider.storeOnBlackListToken(token)
+        }
+
+    }, roles(Roles.USER, Roles.ADMIN))
 }

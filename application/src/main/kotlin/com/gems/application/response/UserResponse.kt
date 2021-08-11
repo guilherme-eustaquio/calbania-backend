@@ -1,3 +1,3 @@
 package com.gems.application.response
 
-data class UserResponse(var username : String, var level : String)
+data class UserResponse(var id: String, var username : String, var level : String)
