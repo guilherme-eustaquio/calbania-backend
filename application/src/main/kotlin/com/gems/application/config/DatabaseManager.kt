@@ -35,11 +35,11 @@ object DatabaseManager {
         connection.lrem(keyName, occurrence, toJsonString(document))
     }
 
-    fun <T> findByKeyName(keyName: String, valueType : Class<T>, current : Long = 0, limit : Long = -1): ArrayList<T> {
+    fun <T> findByKeyName(keyName: String, valueType : Class<T>, start : Long = 0, stop : Long = -1): ArrayList<T> {
 
         val result = ArrayList<T>()
 
-        connection.lrange(keyName, current, limit).forEach {
+        connection.lrange(keyName, start, stop).forEach {
             result.add(toJsonObject(it, valueType))
         }
 

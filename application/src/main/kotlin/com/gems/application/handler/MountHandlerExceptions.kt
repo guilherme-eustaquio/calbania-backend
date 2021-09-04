@@ -1,5 +1,6 @@
 package com.gems.application.handler
 
+import com.gems.application.handler.custom.*
 import io.javalin.Javalin
 import io.javalin.Javalin.log
 
@@ -10,4 +11,5 @@ fun mountHandlerExceptions(app : Javalin) {
     unauthorizedExceptionHandlers(app)
     conflictExceptionHandlers(app)
     badRequestExceptionHandlers(app)
+    forbiddenExceptionHandlers(app)
 }

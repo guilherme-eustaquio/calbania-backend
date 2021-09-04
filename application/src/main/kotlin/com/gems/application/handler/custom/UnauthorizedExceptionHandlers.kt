@@ -1,4 +1,4 @@
-package com.gems.application.handler
+package com.gems.application.handler.custom
 
 import com.gems.application.exception.RevokedTokenException
 import com.gems.application.exception.UsernameOrPasswordIncorrectException

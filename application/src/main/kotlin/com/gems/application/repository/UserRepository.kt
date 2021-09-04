@@ -34,7 +34,7 @@ object UserRepository {
         }
     }
 
-    fun findAll(current : Long = 0, limit : Long = -1) : List<User> {
-        return DatabaseManager.findByKeyName(keyName, User::class.java, current, limit)
+    fun findAll(start : Long = 1, stop : Long = -1) : List<User> {
+        return DatabaseManager.findByKeyName(keyName, User::class.java, start, stop)
     }
 }

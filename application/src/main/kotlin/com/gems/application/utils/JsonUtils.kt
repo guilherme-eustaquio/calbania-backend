@@ -2,6 +2,8 @@ package com.gems.application.utils
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.gems.application.response.PageResponse
+import io.javalin.http.Context
 
 object JsonUtils {
 
@@ -30,6 +32,10 @@ object JsonUtils {
         return toJsonList(toJsonString(convertedList))
     }
 
-    fun toJsonList(src : String): List<*> = objectMapper.readValue(src, List::class.java)
+    fun paginate(src : List<*>, start : Long, stop : Long): PageResponse {
+        return PageResponse(src, start, stop)
+    }
+
+    private fun toJsonList(src : String): List<*> = objectMapper.readValue(src, List::class.java)
 
 }
