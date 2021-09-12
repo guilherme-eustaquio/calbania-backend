@@ -3,6 +3,7 @@ package com.gems.application.service
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.gems.application.config.DatabaseManager
 import com.gems.application.enum.Roles
+import com.gems.application.exception.AdminLevelException
 import com.gems.application.exception.AdminUsernameException
 import com.gems.application.exception.UserAlreadyExistsException
 import com.gems.application.exception.UserNotFoundException
@@ -27,11 +28,11 @@ object UserService {
         return UserRepository.findById(id)
     }
 
-    fun createAdminUser() {
+    fun createAdminUser(): User? {
 
         if(UserRepository.findByUserName("admin") != null) {
             log.info("admin already created.")
-            return
+            return null
         }
 
         log.info("creating admin user...")
@@ -40,9 +41,9 @@ object UserService {
         user.username = "admin"
         user.password = AuthProvider.encryptPassword("calbania")
         user.level = Roles.ADMIN.name
-        UserRepository.save(user)
+        val admin = UserRepository.save(user)
         log.info(DatabaseManager.findByKeyName("users", User::class.java).toString())
-
+        return admin
     }
 
     fun save(user : User): User {
@@ -56,9 +57,20 @@ object UserService {
         return UserRepository.save(user)
     }
 
+    fun updateCredentials(user : User) : User {
+        val userFound = user.username?.let { UserRepository.findByUserName(it) } ?: throw UserNotFoundException()
+
+        return UserRepository.save(userFound) {
+            setNotNullAttributes(userFound, user)
+        }
+    }
+
     fun update(user : User): User {
 
-        val userFound = user.username?.let { UserRepository.findByUserName(it) } ?: throw UserNotFoundException()
+        val userFound = user.id?.let { UserRepository.findById(it) } ?: throw UserNotFoundException()
+
+        preventUpdateAdminUsername(userFound.username!!, user.username!!)
+        preventUpdateAdminLevel(userFound, user)
 
         return UserRepository.save(userFound) {
             setNotNullAttributes(userFound, user)
@@ -71,23 +83,25 @@ object UserService {
 
         val username = decoded?.getClaim("username")?.asString()
 
-        if(username == "admin" && user.username != username) {
-            forbidUpdateAdminUsername(username)
-        }
+        preventUpdateAdminUsername(username!!, user.username!!)
 
         if(username != user.username && UserRepository.findByUserName(user.username!!) != null) {
             throw UserAlreadyExistsException()
         }
 
-        val userFound = username?.let { UserRepository.findByUserName(it) } ?: throw UserNotFoundException()
+        val userFound = username.let { UserRepository.findByUserName(it) } ?: throw UserNotFoundException()
 
         return UserRepository.save(userFound) {
             setNotNullAttributes(userFound, user)
         }
     }
 
-    private fun forbidUpdateAdminUsername(username : String) {
-        if (username == "admin") throw AdminUsernameException()
+    private fun preventUpdateAdminUsername(username : String, usernameToCompare : String) {
+        if(username == "admin" && usernameToCompare != username) throw AdminUsernameException()
+    }
+
+    private fun preventUpdateAdminLevel(user : User, userToCompare : User) {
+        if(user.username == "admin" && userToCompare.level != Roles.ADMIN.name) throw AdminLevelException()
     }
 
     private fun setNotNullAttributes(userToUpdate : User, user : User) {

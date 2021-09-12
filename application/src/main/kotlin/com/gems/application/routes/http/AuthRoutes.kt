@@ -28,19 +28,17 @@ fun beginAuthHttpRoutes(app : Javalin) {
 
         user.lastToken = token
 
-        UserService.update(user)
+        UserService.updateCredentials(user)
 
         ctx.json(JwtResponse(token))
     }, roles(Roles.ANYONE))
 
-    app.post("${contextPath}/logout", { ctx ->
+    app.post("${contextPath}/logout") { ctx ->
 
         val header = ctx.header("Authorization")
         val token = header?.removePrefix("Bearer ")
-
         if (token != null) {
             JwtProvider.storeOnBlackListToken(token)
         }
-
-    }, roles(Roles.USER, Roles.ADMIN))
+    }
 }

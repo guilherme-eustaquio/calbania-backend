@@ -1,6 +1,8 @@
 package com.gems.application.config
 
 import com.gems.application.enum.Roles
+import com.gems.application.exception.InvalidTokenException
+import com.gems.application.exception.LevelException
 import com.gems.application.exception.RevokedTokenException
 import com.gems.application.repository.TokenRepository
 import com.gems.application.security.JwtProvider.validateToken
@@ -25,17 +27,15 @@ object AccessManagerConfig {
         return permittedRoles.contains(Roles.ANYONE)
     }
 
-    private fun checkIfUserIsAuthorized(permittedRoles: Set<Role>, level : String) : Boolean {
-
-        if(permittedRoles.isEmpty()) {
-            return true
-        }
+    private fun checkIfUserIsAuthorized(permittedRoles: Set<Role>, level : String) {
 
         val role = Roles.values().find { value ->
             level == value.name
         }
 
-        return permittedRoles.contains(role)
+        if(permittedRoles.isNotEmpty() && !permittedRoles.contains(role)) {
+            throw LevelException()
+        }
     }
 
     private fun checkToken(ctx: Context, permittedRoles: Set<Role>): Boolean {
@@ -46,13 +46,11 @@ object AccessManagerConfig {
             throw RevokedTokenException()
         }
 
-        val decoded = validateToken(token)
+        val decoded = validateToken(token) ?: throw InvalidTokenException()
 
-        if(decoded != null && checkIfUserIsAuthorized(permittedRoles, decoded.getClaim("level").asString())) {
-            return true
-        }
+        checkIfUserIsAuthorized(permittedRoles, decoded.getClaim("level").asString())
 
-        return false
+        return true
     }
 
     fun setJwtAccessManager(app : Javalin) {

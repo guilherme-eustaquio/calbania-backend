@@ -27,7 +27,13 @@ fun beginUserHttpRoutes(app : Javalin) {
     app.put("$contextPath/:id", { ctx ->
         val user = map(ctx.body<UserRequest>(), User::class.java)
         user.id = ctx.pathParam("id")
-        ctx.json(map(UserService.update(user), UserResponse::class.java))
+        val userUpdated = UserService.update(user)
+        ctx.json(map(userUpdated, UserResponse::class.java))
+
+        userUpdated.lastToken?.let {
+            JwtProvider.storeOnBlackListToken(it)
+        }
+
     }, roles(Roles.ADMIN))
 
     app.put(contextPath) { ctx ->
